@@ -25,3 +25,10 @@
   flex: 1;
   text-align: center;
 }
+
+.Img  {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  align-items: center;
+}
