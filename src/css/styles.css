@@ -5,7 +5,7 @@
 }
 
 .home {
-  background-color: aquamarine;
+  background-color: rgb(158, 157, 179);
 }
 
 .Title {
@@ -31,4 +31,39 @@
   height: auto;
   border-radius: 10px;
   align-items: center;
+}
+
+nav {
+  background-color: #000000;
+  border-bottom: 1px solid #30363d;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 10px 0;
+}
+
+nav li {
+  margin: 0 15px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #58a6ff;
+  font-weight: bold;
+}
+
+nav a:hover {
+  color: #c9d1d9;
+}
+
+.banner {
+  width: 100%;
+  height: auto;
+  max-height: 300px; 
+  object-fit: cover;
+  display: block;
 }
