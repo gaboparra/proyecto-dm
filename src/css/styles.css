@@ -3,3 +3,25 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.home {
+  background-color: aquamarine;
+}
+
+.Title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 50px;
+  padding: 20px;
+}
+
+.Text {
+  flex: 1;
+  text-align: center;
+}
+
+.Vid {
+  flex: 1;
+  text-align: center;
+}
