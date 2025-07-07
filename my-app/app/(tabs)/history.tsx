@@ -28,39 +28,45 @@ export default function HistoryScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
-  const loadHistory = async () => {
+  const loadHistory = useCallback(async () => {
     try {
       const stored = await AsyncStorage.getItem("weatherHistory");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setHistory(parsed);
-      }
+      setHistory(stored ? JSON.parse(stored) : []);
     } catch (e) {
       console.error("Error al cargar historial:", e);
+      setHistory([]);
     }
-  };
+  }, []);
 
-  const clearHistory = async () => {
-    Alert.alert("Confirmar", "¿Borrar todo el historial?", [
-      {
-        text: "Cancelar",
-        style: "cancel",
-      },
-      {
-        text: "Borrar",
-        style: "destructive",
-        onPress: async () => {
+  const clearHistory = () => {
+  Alert.alert("Confirmar", "¿Borrar todo el historial?", [
+    {
+      text: "Cancelar",
+      style: "cancel",
+    },
+    {
+      text: "Borrar",
+      style: "destructive",
+      onPress: async () => {
+        try {
           await AsyncStorage.removeItem("weatherHistory");
+
           setHistory([]);
-        },
+
+          console.log("Historial borrado correctamente.");
+        } catch (e) {
+          console.error("Error al borrar historial:", e);
+          Alert.alert("Error", "No se pudo borrar el historial");
+        }
       },
-    ]);
-  };
+    },
+  ]);
+};
 
   useFocusEffect(
     useCallback(() => {
       loadHistory();
-    }, [])
+    }, [loadHistory])
   );
 
   const goToCity = (city: string) => {
@@ -71,17 +77,20 @@ export default function HistoryScreen() {
     <View
       style={[
         styles.container,
-        {
-          backgroundColor: isDark ? "#1e1e2f" : "#d0f0ff",
-        },
+        { backgroundColor: isDark ? "#1e1e2f" : "#d0f0ff" },
       ]}
     >
+      {/* CABECERA */}
       <View style={styles.header}>
         <Text style={[styles.title, { color: isDark ? "#fff" : "#0077b6" }]}>
           Historial de Búsqueda
         </Text>
         {history.length > 0 && (
-          <TouchableOpacity onPress={clearHistory} style={styles.trashBtn}>
+          <TouchableOpacity 
+            onPress={clearHistory} 
+            style={styles.trashBtn}
+            testID="clear-history-button"
+          >
             <MaterialIcons
               name="delete-forever"
               size={28}
@@ -91,6 +100,7 @@ export default function HistoryScreen() {
         )}
       </View>
 
+      {/* LISTA O MENSAJE VACÍO */}
       {history.length === 0 ? (
         <Text style={[styles.emptyText, { color: isDark ? "#aaa" : "#333" }]}>
           No hay búsquedas recientes.
@@ -98,7 +108,7 @@ export default function HistoryScreen() {
       ) : (
         <FlatList
           data={history}
-          keyExtractor={(item, index) => item.city + index}
+          keyExtractor={(item, index) => `${item.city}-${item.timestamp}-${index}`}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => goToCity(item.city)}>
               <View
@@ -118,10 +128,7 @@ export default function HistoryScreen() {
                 />
                 <View style={styles.textContainer}>
                   <Text
-                    style={[
-                      styles.city,
-                      { color: isDark ? "#fff" : "#023e8a" },
-                    ]}
+                    style={[styles.city, { color: isDark ? "#fff" : "#023e8a" }]}
                   >
                     {item.city}
                   </Text>
